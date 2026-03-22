@@ -12,7 +12,10 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
     - uses: actions/checkout@v4
 
@@ -22,7 +25,10 @@ jobs:
         go-version: '1.25.0'
 
     - name: Build
-      # run: go build -v ./...
       run: go build -o qrgen
-    # - name: Test
-    #   run: go test -v ./...
+
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: qrgen-${{ matrix.os }}
+        path: qrgen*
